@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { formatARS, nightsBetween } from "@/lib/format";
+import { formatARS } from "@/lib/format";
 import { Logo } from "@/components/Logo";
 
 export default async function ConfirmacionPage({ params }: { params: { id: string } }) {
@@ -10,8 +10,6 @@ export default async function ConfirmacionPage({ params }: { params: { id: strin
     include: { room: true },
   });
   if (!booking) notFound();
-
-  const nights = nightsBetween(booking.checkIn, booking.checkOut);
 
   return (
     <main className="min-h-screen">
@@ -28,7 +26,7 @@ export default async function ConfirmacionPage({ params }: { params: { id: strin
           </svg>
         </div>
         <p className="eyebrow mb-6">Reserva confirmada</p>
-        <h1 className="font-display text-5xl lg:text-7xl text-ink-50 leading-tight">
+        <h1 className="font-display text-5xl lg:text-7xl text-ink-50 leading-tight font-light">
           Te <span className="italic text-gold-300">esperamos</span>,<br/>
           <span className="font-script text-gold-300 text-6xl lg:text-8xl block py-3">
             {booking.guestName.split(" ")[0]}
@@ -49,9 +47,10 @@ export default async function ConfirmacionPage({ params }: { params: { id: strin
           <div className="p-8 space-y-5">
             <Row label="Habitación" value={booking.room.name} />
             <Row label="Categoría" value={booking.room.type} />
-            <Row label="Entrada" value={booking.checkIn.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })} />
-            <Row label="Salida" value={booking.checkOut.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })} />
-            <Row label="Turnos" value={String(nights)} />
+            <Row label="Tipo" value={booking.type === "pernocte" ? "Pernocte" : "Turno"} />
+            <Row label="Día" value={booking.date.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })} />
+            <Row label="Horario" value={`${booking.startTime} → ${booking.endTime}`} />
+            <Row label="Duración" value={`${booking.durationHours} horas`} />
             <Row label="Total" value={formatARS(booking.totalPrice)} />
             <Row label="Seña abonada" value={formatARS(booking.depositPaid)} accent />
             <Row label="Saldo al llegar" value={formatARS(booking.totalPrice - booking.depositPaid)} />

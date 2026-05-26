@@ -12,7 +12,7 @@ export default async function AdminPage() {
   });
 
   const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-  const upcoming = bookings.filter(b => b.checkIn >= todayStart);
+  const upcoming = bookings.filter(b => b.date >= todayStart);
   const totalRevenue = bookings.reduce((s, b) => s + b.totalPrice, 0);
   const totalDeposits = bookings.reduce((s, b) => s + b.depositPaid, 0);
 
@@ -48,8 +48,8 @@ export default async function AdminPage() {
             <div className="col-span-2">Código</div>
             <div className="col-span-3">Huésped</div>
             <div className="col-span-2">Habitación</div>
-            <div className="col-span-2">Entrada</div>
-            <div className="col-span-1">Turnos</div>
+            <div className="col-span-2">Día</div>
+            <div className="col-span-1">Horario</div>
             <div className="col-span-2 text-right">Total / Seña</div>
           </div>
           {bookings.length === 0 && (
@@ -57,27 +57,27 @@ export default async function AdminPage() {
               No hay reservas aún.
             </div>
           )}
-          {bookings.map(b => {
-            const nights = Math.round((b.checkOut.getTime() - b.checkIn.getTime()) / 86400000);
-            return (
-              <div key={b.id} className="grid grid-cols-12 gap-4 px-6 py-5 border-b hairline last:border-0 hover:bg-ink-800/40 transition-colors">
-                <div className="col-span-2 font-mono text-xs text-gold-300 tracking-widest self-center">
-                  {b.id.slice(-8).toUpperCase()}
-                </div>
-                <div className="col-span-3 self-center">
-                  <p className="font-display text-ink-50">{b.guestName}</p>
-                  <p className="text-xs text-ink-100/40 italic">{b.guestEmail}</p>
-                </div>
-                <div className="col-span-2 self-center font-display text-ink-100">{b.room.name}</div>
-                <div className="col-span-2 self-center font-display text-ink-100">{b.checkIn.toLocaleDateString("es-AR")}</div>
-                <div className="col-span-1 self-center font-display text-ink-100">{nights}</div>
-                <div className="col-span-2 text-right self-center">
-                  <p className="font-display text-ink-50">{formatARS(b.totalPrice)}</p>
-                  <p className="text-xs text-gold-300 italic">Seña: {formatARS(b.depositPaid)}</p>
-                </div>
+          {bookings.map(b => (
+            <div key={b.id} className="grid grid-cols-12 gap-4 px-6 py-5 border-b hairline last:border-0 hover:bg-ink-800/40 transition-colors">
+              <div className="col-span-2 font-mono text-xs text-gold-300 tracking-widest self-center">
+                {b.id.slice(-8).toUpperCase()}
               </div>
-            );
-          })}
+              <div className="col-span-3 self-center">
+                <p className="font-display text-ink-50">{b.guestName}</p>
+                <p className="text-xs text-ink-100/40 italic">{b.guestEmail}</p>
+              </div>
+              <div className="col-span-2 self-center">
+                <p className="font-display text-ink-100">{b.room.name}</p>
+                <p className="text-[10px] eyebrow text-ink-100/40">{b.type === "pernocte" ? "Pernocte" : "Turno"}</p>
+              </div>
+              <div className="col-span-2 self-center font-display text-ink-100">{b.date.toLocaleDateString("es-AR")}</div>
+              <div className="col-span-1 self-center font-display text-ink-100 text-sm">{b.startTime}→{b.endTime}</div>
+              <div className="col-span-2 text-right self-center">
+                <p className="font-display text-ink-50">{formatARS(b.totalPrice)}</p>
+                <p className="text-xs text-gold-300 italic">Seña: {formatARS(b.depositPaid)}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>

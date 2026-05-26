@@ -29,7 +29,7 @@ export default async function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-40">
         <div className="absolute inset-0 mood-hero">
           <Image
             src="/hotel/hab23-1.jpg"
@@ -40,7 +40,7 @@ export default async function HomePage() {
           />
         </div>
 
-        <div className="relative text-center px-6 max-w-5xl mx-auto">
+        <div className="relative text-center px-6 max-w-5xl mx-auto z-10">
           <p className="eyebrow text-gold-300 mb-8">Albergue transitorio · Munro · Abierto 24 hs</p>
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl text-ink-50 leading-[1.05] font-light">
             La ruta hacia<br />
@@ -58,8 +58,8 @@ export default async function HomePage() {
             <a href="#habitaciones" className="cta-link">Ver habitaciones</a>
           </div>
 
-          <p className="mt-16 eyebrow text-ink-50/50">
-            Desde <span className="font-display text-2xl text-ink-50 normal-case tracking-normal not-italic">{formatARS(minPrice)}</span> / turno
+          <p className="mt-16 eyebrow text-gold-300">
+            Desde <span className="font-display text-3xl text-ink-50 normal-case tracking-normal not-italic mx-2">{formatARS(minPrice)}</span> <span className="text-ink-50/70">/ turno</span>
           </p>
         </div>
       </section>

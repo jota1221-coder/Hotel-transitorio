@@ -6,7 +6,7 @@ import { Logo } from "@/components/Logo";
 export default async function ReservarPage({
   searchParams,
 }: {
-  searchParams: { room?: string; checkIn?: string; checkOut?: string };
+  searchParams: { room?: string; date?: string };
 }) {
   const rooms = await prisma.room.findMany({ orderBy: { pricePerNight: "asc" } });
 
@@ -35,8 +35,7 @@ export default async function ReservarPage({
           <ReservationForm
             rooms={rooms}
             preselectedRoomId={searchParams.room}
-            initialCheckIn={searchParams.checkIn}
-            initialCheckOut={searchParams.checkOut}
+            initialDate={searchParams.date}
           />
         </div>
       </section>
