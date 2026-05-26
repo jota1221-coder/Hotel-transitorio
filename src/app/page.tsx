@@ -5,6 +5,7 @@ import { formatARS } from "@/lib/format";
 import { Logo } from "@/components/Logo";
 import Reveal from "@/components/Reveal";
 import BookingBar from "@/components/BookingBar";
+import ImageLightbox from "@/components/ImageLightbox";
 
 export default async function HomePage() {
   const rooms = await prisma.room.findMany({ orderBy: { pricePerNight: "asc" } });
@@ -87,9 +88,11 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <Reveal className="lg:col-span-5" delay={200}>
-            <div className="mood aspect-[3/4]">
-              <Image src="/hotel/hab15-2.jpg" alt="Interior Ruta Hotel" fill className="object-cover" />
-            </div>
+            <ImageLightbox src="/hotel/hab15-2.jpg" alt="Interior Ruta Hotel">
+              <div className="mood aspect-[3/4]">
+                <Image src="/hotel/hab15-2.jpg" alt="Interior Ruta Hotel" fill className="object-cover" />
+              </div>
+            </ImageLightbox>
           </Reveal>
         </div>
       </section>
@@ -112,9 +115,11 @@ export default async function HomePage() {
             <Reveal key={room.id} className="mb-32 last:mb-0">
               <div className={`grid lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? "lg:[direction:rtl]" : ""}`}>
                 <div className="lg:col-span-7 [direction:ltr]">
-                  <div className="mood aspect-[4/3]">
-                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
-                  </div>
+                  <ImageLightbox src={room.imageUrl} alt={room.name}>
+                    <div className="mood aspect-[4/3]">
+                      <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
+                    </div>
+                  </ImageLightbox>
                 </div>
                 <div className="lg:col-span-5 [direction:ltr]">
                   <p className="eyebrow mb-4">{room.type}</p>
