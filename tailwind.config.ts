@@ -5,41 +5,57 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta Ruta Hotel — navy profundo + rose vibrante
-        night: {
-          50:  "#E8ECF3",
-          100: "#C5CDDE",
-          200: "#8A9AB8",
-          300: "#5F7090",
-          400: "#3A4A6B",
-          500: "#1F2D4D",
-          600: "#152038",
-          700: "#0E1828",
-          800: "#0A1424",
-          900: "#060D1A",
-          950: "#03070F"
+        ink: {
+          50:  "#F2EDE5",
+          100: "#D6CFC4",
+          200: "#9F968A",
+          300: "#6E665C",
+          400: "#3D3833",
+          500: "#1F1B17",
+          600: "#15110F",
+          700: "#0E0B0A",
+          800: "#080706",
+          900: "#040303",
+          950: "#020201"
         },
-        // Rose vibrante — matchea LEDs rojos de habitaciones y logo
-        rose: {
-          50:  "#FFF1F5",
-          100: "#FFE0E9",
-          200: "#FFBDD0",
-          300: "#FF8AAE",
-          400: "#FF5588",
-          500: "#E83467",   // principal CTA
-          600: "#C2204E",
-          700: "#8F1738",
-          800: "#5C0E24",
-          900: "#2F0712"
+        wine: {
+          50:  "#FCF3F5",
+          100: "#F3D8DD",
+          200: "#E2A4B0",
+          300: "#C97082",
+          400: "#A94659",
+          500: "#7A1F32",
+          600: "#5B1525",
+          700: "#3F0F1A",
+          800: "#260910",
+          900: "#140509"
+        },
+        gold: {
+          50:  "#FBF6EC",
+          100: "#F3E5C7",
+          200: "#E5C98E",
+          300: "#D5AC5E",
+          400: "#B98D3F",
+          500: "#8E6A2C",
+          600: "#6A4E1F"
         }
       },
       fontFamily: {
-        serif: ["'Cormorant Garamond'", "Georgia", "serif"],
-        sans: ["'Inter'", "system-ui", "sans-serif"],
-        script: ["'Great Vibes'", "cursive"]
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        script: ["var(--font-script)", "cursive"]
       },
       letterSpacing: {
         widest: "0.25em"
+      },
+      animation: {
+        "fade-up": "fadeUp 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards"
+      },
+      keyframes: {
+        fadeUp: {
+          "0%":   { opacity: "0", transform: "translateY(28px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" }
+        }
       }
     }
   },

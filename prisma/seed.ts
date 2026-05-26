@@ -11,61 +11,61 @@ async function main() {
       {
         name: "Habitación N°7",
         type: "Simple",
-        description: "Habitación cómoda y discreta, ideal para una pausa breve. Bluetooth, TV y aire acondicionado.",
+        description: "Discreción absoluta. Una pausa íntima sin pretensiones, con todas las comodidades esenciales.",
         pricePerNight: 38000,
         capacity: 2,
         amenities: "Cama Queen,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=1200&q=80"
+        imageUrl: "/hotel/hab15-1.jpg"
       },
       {
         name: "Habitación N°13",
         type: "Simple con cochera",
-        description: "Acceso directo por cochera privada. Ambiente íntimo con paleta cálida y madera natural.",
+        description: "Cochera privada. Llegás, entrás y nadie te ve. Ambiente cálido para un encuentro sin testigos.",
         pricePerNight: 43000,
         capacity: 2,
         amenities: "Cochera privada,Cama Queen,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80"
+        imageUrl: "/hotel/hab15-2.jpg"
       },
       {
         name: "Habitación N°15",
-        type: "Con cochera e hidro",
-        description: "Hidromasaje privado, espejo de pared completa e iluminación LED regulable.",
+        type: "Con cochera e hidromasaje",
+        description: "Hidromasaje, luz tenue y un sillón blanco que parece flotar. Diseñada para perder la noción del tiempo.",
         pricePerNight: 48000,
         capacity: 2,
         amenities: "Cochera privada,Hidromasaje,Iluminación LED,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "https://images.unsplash.com/photo-1591088398332-8a7791972843?w=1200&q=80"
+        imageUrl: "/hotel/hab15-1.jpg"
       },
       {
         name: "Habitación N°20",
-        type: "Con cochera e hidro",
-        description: "Suite con hidromasaje, paredes acolchadas y ambientación sensorial. Climatización individual.",
+        type: "Con cochera e hidromasaje",
+        description: "Suite con hidromasaje y ambientación sensorial. Climatización individual, aislación reforzada.",
         pricePerNight: 48000,
         capacity: 2,
         amenities: "Cochera privada,Hidromasaje,Iluminación LED,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80"
+        imageUrl: "/hotel/hab23-2.jpg"
       },
       {
         name: "Habitación N°23",
-        type: "Con cochera e hidro",
-        description: "Hidromasaje doble, vidriado floor-to-ceiling y aislación acústica reforzada.",
+        type: "Con cochera e hidromasaje",
+        description: "Hidromasaje circular con luces de neón azul. Un escenario que mezcla privacidad y deseo.",
         pricePerNight: 48000,
         capacity: 2,
         amenities: "Cochera privada,Hidromasaje,Iluminación LED,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1200&q=80"
+        imageUrl: "/hotel/hab23-1.jpg"
       },
       {
         name: "Habitación Premier N°30",
-        type: "Premier con hidro",
-        description: "Top del hotel. Hidromasaje, cochera, room service incluido y ambientación premium.",
+        type: "Premier con hidromasaje",
+        description: "Top del hotel. Hidromasaje, room service incluido y ambientación premium. La experiencia completa.",
         pricePerNight: 55000,
         capacity: 2,
         amenities: "Cochera privada,Hidromasaje,Room service incluido,Iluminación LED,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C,Insonorizada",
-        imageUrl: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80"
+        imageUrl: "/hotel/hab23-2.jpg"
       }
     ]
   });
 
-  console.log("✓ Seed Ruta Hotel completo — 6 habitaciones cargadas");
+  console.log("✓ Seed Ruta Hotel — 6 habitaciones con fotos reales");
 }
 
 main().finally(() => prisma.$disconnect());

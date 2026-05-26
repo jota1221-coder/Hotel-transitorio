@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { formatARS, nightsBetween } from "@/lib/format";
 
 type Room = {
@@ -13,18 +14,29 @@ type Room = {
   imageUrl: string;
 };
 
-export default function ReservationForm({ rooms, preselectedRoomId }: { rooms: Room[]; preselectedRoomId?: string }) {
+export default function ReservationForm({
+  rooms,
+  preselectedRoomId,
+  initialCheckIn,
+  initialCheckOut,
+}: {
+  rooms: Room[];
+  preselectedRoomId?: string;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+}) {
   const router = useRouter();
   const today = new Date().toISOString().slice(0, 10);
   const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
 
   const [roomId, setRoomId] = useState(preselectedRoomId || rooms[0]?.id || "");
-  const [checkIn, setCheckIn] = useState(today);
-  const [checkOut, setCheckOut] = useState(tomorrow);
+  const [showAllRooms, setShowAllRooms] = useState(!preselectedRoomId);
+  const [checkIn, setCheckIn] = useState(initialCheckIn || today);
+  const [checkOut, setCheckOut] = useState(initialCheckOut || tomorrow);
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
-  const [website, setWebsite] = useState(""); // honeypot
+  const [website, setWebsite] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +53,7 @@ export default function ReservationForm({ rooms, preselectedRoomId }: { rooms: R
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, website })
+        body: JSON.stringify({ roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, website }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al crear la reserva");
@@ -53,8 +65,8 @@ export default function ReservationForm({ rooms, preselectedRoomId }: { rooms: R
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid lg:grid-cols-5 gap-12">
-      {/* Honeypot — campo oculto para bots. Los humanos no lo ven. */}
+    <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-16">
+      {/* Honeypot — solo bots lo completan */}
       <input
         type="text"
         name="website"
@@ -65,60 +77,144 @@ export default function ReservationForm({ rooms, preselectedRoomId }: { rooms: R
         aria-hidden="true"
         style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
       />
-      <div className="lg:col-span-3 space-y-12">
-        {/* Habitación */}
+
+      <div className="lg:col-span-7 space-y-16">
+        {/* 1 · Habitación */}
         <fieldset>
-          <legend className="eyebrow mb-6">1 · Elegí la habitación</legend>
-          <div className="space-y-3">
-            {rooms.map((room) => (
-              <label key={room.id} className={`flex gap-5 p-4 cursor-pointer border transition-all ${roomId === room.id ? "border-rose-500 bg-rose-500/5" : "border-night-700 hover:border-night-400"}`}>
-                <input type="radio" name="room" value={room.id} checked={roomId === room.id} onChange={() => setRoomId(room.id)} className="sr-only" />
-                <img src={room.imageUrl} alt={room.name} className="w-24 h-24 object-cover" />
-                <div className="flex-1">
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="font-display text-xl text-night-50">{room.name}</h3>
-                    <span className="eyebrow">{room.type}</span>
+          <p className="eyebrow mb-6">01 · Habitación</p>
+
+          {!showAllRooms && selected ? (
+            // Vista compacta: solo la habitación preseleccionada
+            <div className="flex gap-6 items-start border hairline p-5">
+              <div className="relative w-32 h-32 shrink-0 mood">
+                <Image src={selected.imageUrl} alt={selected.name} fill className="object-cover" />
+              </div>
+              <div className="flex-1">
+                <p className="eyebrow mb-1">{selected.type}</p>
+                <h3 className="font-display text-2xl text-ink-50">{selected.name}</h3>
+                <p className="mt-2 text-sm text-ink-100/60 italic font-display">
+                  Hasta {selected.capacity} {selected.capacity === 1 ? "persona" : "personas"}
+                </p>
+                <p className="mt-3 font-display text-xl text-gold-300">
+                  {formatARS(selected.pricePerNight)} <span className="text-ink-100/40 text-sm">/turno</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAllRooms(true)}
+                className="cta-link self-center"
+              >
+                Cambiar
+              </button>
+            </div>
+          ) : (
+            // Vista expandida: todas las habitaciones
+            <div className="space-y-3">
+              {rooms.map(room => (
+                <label
+                  key={room.id}
+                  className={`flex gap-5 p-4 cursor-pointer border transition-all ${
+                    roomId === room.id ? "border-gold-300 bg-gold-300/5" : "border-ink-400/40 hover:border-ink-100/30"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="room"
+                    value={room.id}
+                    checked={roomId === room.id}
+                    onChange={() => setRoomId(room.id)}
+                    className="sr-only"
+                  />
+                  <div className="relative w-24 h-24 shrink-0 mood">
+                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
                   </div>
-                  <p className="text-xs text-night-300 mt-1">Hasta {room.capacity} {room.capacity === 1 ? "persona" : "personas"}</p>
-                  <p className="mt-3 font-medium text-sm text-night-50">{formatARS(room.pricePerNight)} <span className="text-night-300">/turno</span></p>
-                </div>
-              </label>
-            ))}
-          </div>
+                  <div className="flex-1">
+                    <p className="eyebrow !text-[10px] mb-1">{room.type}</p>
+                    <h3 className="font-display text-xl text-ink-50">{room.name}</h3>
+                    <p className="mt-3 font-display text-base text-gold-300">
+                      {formatARS(room.pricePerNight)} <span className="text-ink-100/40 text-xs">/turno</span>
+                    </p>
+                  </div>
+                </label>
+              ))}
+              {preselectedRoomId && (
+                <button
+                  type="button"
+                  onClick={() => setShowAllRooms(false)}
+                  className="cta-link mt-4"
+                >
+                  Volver a la elegida
+                </button>
+              )}
+            </div>
+          )}
         </fieldset>
 
-        {/* Fechas */}
+        {/* 2 · Fechas */}
         <fieldset>
-          <legend className="eyebrow mb-6">2 · Fecha y horario</legend>
+          <p className="eyebrow mb-6">02 · Fecha y horario</p>
           <div className="grid grid-cols-2 gap-8">
             <div>
-              <label className="text-xs text-night-300 block mb-2">Entrada</label>
-              <input type="date" min={today} value={checkIn} onChange={e => setCheckIn(e.target.value)} className="input" required />
+              <label className="field-label">Entrada</label>
+              <input
+                type="date"
+                min={today}
+                value={checkIn}
+                onChange={e => setCheckIn(e.target.value)}
+                className="input"
+                required
+              />
             </div>
             <div>
-              <label className="text-xs text-night-300 block mb-2">Salida</label>
-              <input type="date" min={checkIn} value={checkOut} onChange={e => setCheckOut(e.target.value)} className="input" required />
+              <label className="field-label">Salida</label>
+              <input
+                type="date"
+                min={checkIn}
+                value={checkOut}
+                onChange={e => setCheckOut(e.target.value)}
+                className="input"
+                required
+              />
             </div>
           </div>
-          <p className="text-xs text-night-300 mt-4">{nights} {nights === 1 ? "noche" : "noches"} · Pernocte incluye desayuno</p>
+          <p className="text-xs text-ink-100/50 mt-4 italic font-display">
+            {nights} {nights === 1 ? "turno" : "turnos"} · El pernocte incluye desayuno
+          </p>
         </fieldset>
 
-        {/* Datos */}
+        {/* 3 · Datos */}
         <fieldset>
-          <legend className="eyebrow mb-6">3 · Tus datos</legend>
-          <div className="space-y-6">
+          <p className="eyebrow mb-6">03 · Tus datos</p>
+          <div className="space-y-8">
             <div>
-              <label className="text-xs text-night-300 block mb-2">Nombre y apellido</label>
-              <input value={guestName} onChange={e => setGuestName(e.target.value)} className="input" required />
+              <label className="field-label">Nombre y apellido</label>
+              <input
+                value={guestName}
+                onChange={e => setGuestName(e.target.value)}
+                className="input"
+                required
+              />
             </div>
             <div className="grid grid-cols-2 gap-8">
               <div>
-                <label className="text-xs text-night-300 block mb-2">Email</label>
-                <input type="email" value={guestEmail} onChange={e => setGuestEmail(e.target.value)} className="input" required />
+                <label className="field-label">Email</label>
+                <input
+                  type="email"
+                  value={guestEmail}
+                  onChange={e => setGuestEmail(e.target.value)}
+                  className="input"
+                  required
+                />
               </div>
               <div>
-                <label className="text-xs text-night-300 block mb-2">Teléfono</label>
-                <input type="tel" value={guestPhone} onChange={e => setGuestPhone(e.target.value)} className="input" required />
+                <label className="field-label">Teléfono</label>
+                <input
+                  type="tel"
+                  value={guestPhone}
+                  onChange={e => setGuestPhone(e.target.value)}
+                  className="input"
+                  required
+                />
               </div>
             </div>
           </div>
@@ -126,35 +222,48 @@ export default function ReservationForm({ rooms, preselectedRoomId }: { rooms: R
       </div>
 
       {/* Resumen */}
-      <aside className="lg:col-span-2">
-        <div className="lg:sticky lg:top-8 border hairline p-8 bg-night-800/50 backdrop-blur">
-          <p className="eyebrow mb-6">Resumen</p>
+      <aside className="lg:col-span-5">
+        <div className="lg:sticky lg:top-32 border hairline p-10 bg-ink-900/60 backdrop-blur">
+          <p className="eyebrow mb-8">Resumen</p>
           {selected && (
             <>
-              <div className="flex justify-between text-sm py-3 border-b hairline">
-                <span className="text-night-300">Habitación</span>
-                <span className="text-night-50">{selected.name}</span>
+              <div className="flex justify-between py-4 border-b hairline">
+                <span className="text-sm text-ink-100/50 italic font-display">Habitación</span>
+                <span className="font-display text-ink-50">{selected.name}</span>
               </div>
-              <div className="flex justify-between text-sm py-3 border-b hairline">
-                <span className="text-night-300">{nights} {nights === 1 ? "turno" : "turnos"} × {formatARS(selected.pricePerNight)}</span>
-                <span className="text-night-50">{formatARS(total)}</span>
+              <div className="flex justify-between py-4 border-b hairline">
+                <span className="text-sm text-ink-100/50 italic font-display">
+                  {nights} × {formatARS(selected.pricePerNight)}
+                </span>
+                <span className="font-display text-ink-50">{formatARS(total)}</span>
               </div>
-              <div className="flex justify-between text-base py-4 border-b hairline">
-                <span className="text-night-100">Total</span>
-                <span className="font-display text-2xl text-night-50">{formatARS(total)}</span>
+              <div className="flex justify-between py-6 border-b hairline">
+                <span className="font-display text-lg text-ink-50">Total</span>
+                <span className="font-display text-3xl text-ink-50">{formatARS(total)}</span>
               </div>
-              <div className="mt-6 p-4 bg-rose-500/10 border border-rose-500/30">
-                <p className="eyebrow !text-rose-400 mb-2">Seña 30%</p>
-                <p className="font-display text-3xl text-rose-400">{formatARS(deposit)}</p>
-                <p className="text-xs text-night-200 mt-2">Saldo de {formatARS(total - deposit)} al llegar</p>
+
+              <div className="mt-8 py-6 border border-gold-300/30 bg-gold-300/5 px-6">
+                <p className="eyebrow text-gold-300 mb-3">Seña 30%</p>
+                <p className="font-display text-3xl text-gold-300">{formatARS(deposit)}</p>
+                <p className="text-xs text-ink-100/60 mt-3 italic font-display">
+                  Saldo de {formatARS(total - deposit)} al llegar
+                </p>
               </div>
             </>
           )}
-          {error && <p className="mt-4 text-sm text-rose-300 bg-rose-900/30 p-3 border border-rose-700/40">{error}</p>}
-          <button type="submit" disabled={submitting} className="btn-primary w-full mt-8">
-            {submitting ? "Procesando…" : "Confirmar y pagar seña →"}
+
+          {error && (
+            <p className="mt-6 text-sm text-wine-300 italic font-display bg-wine-900/40 px-4 py-3 border border-wine-500/40">
+              {error}
+            </p>
+          )}
+
+          <button type="submit" disabled={submitting} className="cta-solid w-full mt-10">
+            {submitting ? "Procesando…" : "Confirmar y pagar seña"}
           </button>
-          <p className="text-xs text-night-300 mt-4 text-center">Pago seguro vía Mercado Pago</p>
+          <p className="text-[10px] text-ink-100/40 mt-5 text-center eyebrow">
+            Pago seguro vía Mercado Pago
+          </p>
         </div>
       </aside>
     </form>

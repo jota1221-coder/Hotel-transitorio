@@ -1,234 +1,312 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { formatARS } from "@/lib/format";
 import { Logo } from "@/components/Logo";
+import Reveal from "@/components/Reveal";
+import BookingBar from "@/components/BookingBar";
 
 export default async function HomePage() {
   const rooms = await prisma.room.findMany({ orderBy: { pricePerNight: "asc" } });
+  const featured = rooms.filter(r => r.type.toLowerCase().includes("hidromasaje")).slice(0, 2);
   const minPrice = rooms[0]?.pricePerNight ?? 38000;
 
   return (
-    <main>
+    <main className="pb-32">
       {/* NAV */}
-      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-night-900/70 border-b hairline">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
-          <Link href="/">
-            <Logo size={38} />
+      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink-900/40 border-b hairline">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center">
+            <Logo size={42} />
           </Link>
-          <div className="hidden md:flex items-center gap-10 eyebrow !text-night-100">
-            <a href="#habitaciones" className="hover:text-rose-400 transition-colors">Habitaciones</a>
-            <a href="#tarifas" className="hover:text-rose-400 transition-colors">Tarifas</a>
-            <a href="#ubicacion" className="hover:text-rose-400 transition-colors">Ubicación</a>
+          <div className="hidden md:flex items-center gap-12">
+            <a href="#habitaciones" className="cta-link !border-b-0 !pb-0">Habitaciones</a>
+            <a href="#tarifas" className="cta-link !border-b-0 !pb-0">Tarifas</a>
+            <a href="#ubicacion" className="cta-link !border-b-0 !pb-0">Ubicación</a>
           </div>
-          <Link href="/reservar" className="btn-primary !py-2 !px-4 text-xs">Reservar</Link>
+          <Link href="/reservar" className="cta-link">Reservar</Link>
         </div>
       </nav>
 
-      {/* HERO con imagen de fondo full */}
-      <section className="relative min-h-[100vh] flex items-end overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="mood-image mood-image-hero w-full h-full">
-            <img
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=2000&q=85"
-              alt="Habitación con hidromasaje"
-              className="w-full h-full object-cover"
-            />
-          </div>
+      {/* HERO */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 mood-hero">
+          <Image
+            src="/hotel/hab23-1.jpg"
+            alt="Habitación con hidromasaje"
+            fill
+            priority
+            className="object-cover"
+          />
         </div>
 
-        {/* Glow ambient */}
-        <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-20 -left-40 w-[500px] h-[500px] bg-night-500/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-20 pb-32 lg:pb-40">
-          <p className="eyebrow mb-6">Albergue transitorio · Munro · Abierto 24 hs</p>
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-8xl leading-[0.95] text-night-50 max-w-4xl">
-            La ruta hacia<br/>
-            <span className="italic text-rose-400">el placer</span><br/>
+        <div className="relative text-center px-6 max-w-5xl mx-auto">
+          <p className="eyebrow text-gold-300 mb-8">Albergue transitorio · Munro · Abierto 24 hs</p>
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl text-ink-50 leading-[1.05] font-light">
+            La ruta hacia<br />
+            <span className="font-script text-gold-300 text-6xl sm:text-7xl lg:text-9xl block py-2 leading-[0.9]">el placer</span>
             de tus momentos íntimos.
           </h1>
-          <p className="mt-10 max-w-md text-night-100 leading-relaxed">
-            40 habitaciones con jacuzzi, cochera privada y room service. Reservá online en 60 segundos,
-            pagás una seña y abonás el resto al llegar.
+          <div className="flex justify-center mt-10">
+            <span className="rule rule-gold" />
+          </div>
+          <p className="mt-10 text-ink-100/80 max-w-md mx-auto leading-relaxed italic">
+            Cuarenta habitaciones con jacuzzi, cochera privada y room service. Discreción absoluta.
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link href="/reservar" className="btn-primary">Reservar ahora →</Link>
-            <a href="#habitaciones" className="btn-ghost">Ver habitaciones</a>
+          <div className="mt-12 flex items-center justify-center gap-10">
+            <Link href="/reservar" className="cta-solid">Reservar ahora</Link>
+            <a href="#habitaciones" className="cta-link">Ver habitaciones</a>
           </div>
 
-          {/* precio chip */}
-          <div className="mt-12 inline-flex items-baseline gap-3 border-l-2 border-rose-500 pl-5">
-            <p className="eyebrow">Desde</p>
-            <p className="font-display text-3xl text-night-50">{formatARS(minPrice)}<span className="text-base text-night-300"> / turno</span></p>
-          </div>
+          <p className="mt-16 eyebrow text-ink-50/50">
+            Desde <span className="font-display text-2xl text-ink-50 normal-case tracking-normal not-italic">{formatARS(minPrice)}</span> / turno
+          </p>
         </div>
       </section>
 
-      {/* HABITACIONES */}
-      <section id="habitaciones" className="py-24 border-t hairline">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-end justify-between mb-16">
-            <div>
-              <p className="eyebrow mb-4">01 — Habitaciones</p>
-              <h2 className="font-display text-4xl lg:text-5xl text-night-50">Elegí la tuya.</h2>
+      {/* BIENVENIDA */}
+      <section className="py-32 border-t hairline">
+        <div className="max-w-5xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-16 items-center">
+          <Reveal className="lg:col-span-7">
+            <p className="eyebrow mb-6">01 — La casa</p>
+            <h2 className="font-display text-3xl lg:text-5xl text-ink-50 leading-tight font-light">
+              Una <span className="italic text-gold-300">pausa</span> en el camino,<br/>
+              un secreto que se guarda.
+            </h2>
+            <span className="rule mt-8" />
+            <div className="mt-10 space-y-5 text-ink-100/80 text-lg leading-relaxed font-display">
+              <p>
+                <em>Ruta Hotel</em> nació para quienes buscan un encuentro sin protocolos.
+                Cuarenta habitaciones pensadas para el deseo: hidromasajes, iluminación
+                tenue, sábanas frescas, silencio.
+              </p>
+              <p>
+                Llegás por la cochera. Nadie te ve entrar, nadie te ve salir.
+                El tiempo, por una vez, es solo tuyo.
+              </p>
             </div>
-            <p className="hidden md:block max-w-xs text-sm text-night-200">
-              40 habitaciones distribuidas en 4 categorías. Cada una pensada para una experiencia distinta.
-            </p>
-          </div>
+          </Reveal>
+          <Reveal className="lg:col-span-5" delay={200}>
+            <div className="mood aspect-[3/4]">
+              <Image src="/hotel/hab15-2.jpg" alt="Interior Ruta Hotel" fill className="object-cover" />
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {rooms.map((room) => (
-              <article key={room.id} className="group">
-                <div className="mood-image aspect-[4/5] mb-5">
-                  <img
-                    src={room.imageUrl}
-                    alt={room.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="font-display italic text-sm text-night-50 bg-night-900/70 backdrop-blur px-3 py-1.5 border border-rose-500/30">{room.type}</span>
+      {/* DESTACADAS — editorial alternado */}
+      <section id="habitaciones" className="py-32 border-t hairline">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10">
+          <Reveal className="text-center max-w-2xl mx-auto mb-24">
+            <p className="eyebrow mb-6">02 — Habitaciones</p>
+            <h2 className="font-display text-3xl lg:text-5xl text-ink-50 leading-tight font-light">
+              Cada habitación, un <span className="italic text-gold-300">escenario</span>.
+            </h2>
+            <div className="flex justify-center"><span className="rule" /></div>
+            <p className="mt-8 text-ink-100/70 italic">
+              Seis categorías. Distintas atmósferas. La misma promesa de privacidad.
+            </p>
+          </Reveal>
+
+          {featured.map((room, i) => (
+            <Reveal key={room.id} className="mb-32 last:mb-0">
+              <div className={`grid lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? "lg:[direction:rtl]" : ""}`}>
+                <div className="lg:col-span-7 [direction:ltr]">
+                  <div className="mood aspect-[4/3]">
+                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
                   </div>
                 </div>
-                <h3 className="font-display text-2xl text-night-50">{room.name}</h3>
-                <p className="mt-2 text-sm text-night-200 leading-relaxed">{room.description}</p>
-                <div className="mt-5 flex items-center justify-between pt-5 border-t hairline">
-                  <span className="font-display text-xl text-night-50">{formatARS(room.pricePerNight)}<span className="text-xs text-night-300"> /turno</span></span>
-                  <Link href={`/reservar?room=${room.id}`} className="font-display italic text-lg text-rose-400 border-b border-rose-500/50 pb-0.5 hover:text-rose-300 hover:border-rose-300 transition-colors">Reservar →</Link>
+                <div className="lg:col-span-5 [direction:ltr]">
+                  <p className="eyebrow mb-4">{room.type}</p>
+                  <h3 className="font-display text-3xl lg:text-4xl text-ink-50 leading-tight font-light">
+                    {room.name}
+                  </h3>
+                  <span className="rule mt-6" />
+                  <p className="mt-8 text-ink-100/70 text-lg leading-relaxed font-display italic">
+                    {room.description}
+                  </p>
+                  <div className="mt-10 flex items-baseline gap-4">
+                    <span className="font-display text-3xl text-gold-300">{formatARS(room.pricePerNight)}</span>
+                    <span className="eyebrow text-ink-100/50">/ turno</span>
+                  </div>
+                  <Link href={`/reservar?room=${room.id}`} className="cta-link mt-10">
+                    Reservar esta habitación
+                  </Link>
                 </div>
-              </article>
-            ))}
-          </div>
+              </div>
+            </Reveal>
+          ))}
+
+          {/* Grid de todas las demás */}
+          <Reveal className="border-t hairline pt-20 mt-20">
+            <h3 className="font-display text-3xl text-ink-50 text-center mb-16">
+              Las <span className="italic text-gold-300">seis</span> categorías
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
+              {rooms.map(room => (
+                <Link key={room.id} href={`/reservar?room=${room.id}`} className="group block">
+                  <div className="mood aspect-[4/5] mb-5">
+                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
+                  </div>
+                  <p className="eyebrow mb-2">{room.type}</p>
+                  <h4 className="font-display text-2xl text-ink-50 group-hover:text-gold-300 transition-colors">
+                    {room.name}
+                  </h4>
+                  <div className="mt-3 flex items-baseline justify-between">
+                    <span className="font-display text-lg text-ink-100/70">{formatARS(room.pricePerNight)} <span className="text-xs text-ink-100/40">/turno</span></span>
+                    <span className="cta-link !text-[10px]">Reservar</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* TARIFAS */}
-      <section id="tarifas" className="py-24 border-t hairline bg-night-800/40">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="grid lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-5">
-              <p className="eyebrow mb-4">02 — Tarifas</p>
-              <h2 className="font-display text-4xl lg:text-5xl leading-tight text-night-50">Transparencia <span className="italic text-rose-400">total</span>.</h2>
-              <p className="mt-6 text-night-200 max-w-md leading-relaxed">
-                Sin cargos sorpresa. El precio que ves es el precio final. Aceptamos efectivo, débito, crédito y Mercado Pago.
-              </p>
-              <div className="mt-10 space-y-2">
-                <p className="text-sm text-night-200"><span className="text-night-50 font-medium">Turnos de 2 horas</span> en horario habitual.</p>
-                <p className="text-sm text-night-200"><span className="text-night-50 font-medium">Turnos de 3 horas</span> entre las 12 y las 20 hs (para habitaciones con cochera).</p>
-              </div>
+      <section id="tarifas" className="py-32 border-t hairline bg-ink-900/40">
+        <div className="max-w-5xl mx-auto px-6 lg:px-10">
+          <Reveal className="text-center max-w-2xl mx-auto mb-20">
+            <p className="eyebrow mb-6">03 — Tarifas</p>
+            <h2 className="font-display text-3xl lg:text-5xl text-ink-50 leading-tight font-light">
+              <span className="italic text-gold-300">Transparencia</span> total.
+            </h2>
+            <div className="flex justify-center"><span className="rule" /></div>
+            <p className="mt-8 text-ink-100/70 italic">
+              El precio que ves es el precio final. Aceptamos efectivo, débito, crédito y Mercado Pago.
+            </p>
+          </Reveal>
+
+          <Reveal>
+            <div className="border-t hairline">
+              <Tarifa nombre="Habitación Simple"          precio={38000} turno="Turnos de 2 hs" />
+              <Tarifa nombre="Con cochera"                precio={43000} turno="3 hs (12-20hs) · 2 hs fuera de horario" />
+              <Tarifa nombre="Con cochera e hidromasaje"  precio={48000} turno="3 hs (12-20hs) · 2 hs fuera de horario" />
+              <Tarifa nombre="Premier con hidromasaje"    precio={55000} turno="3 hs (12-20hs)" destacado />
             </div>
 
-            <div className="lg:col-span-7">
-              <div className="border hairline">
-                <Tarifa nombre="Habitación Simple"        precio={38000} turno="Turnos de 2 hs" />
-                <Tarifa nombre="Con cochera"               precio={43000} turno="3 hs (12-20hs) / 2 hs fuera de horario" />
-                <Tarifa nombre="Con cochera e hidromasaje" precio={48000} turno="3 hs (12-20hs) / 2 hs fuera de horario" />
-                <Tarifa nombre="Premier con hidromasaje"   precio={55000} turno="3 hs (12-20hs)" destacado />
-              </div>
-
-              {/* Pernocte */}
-              <div className="mt-8 border border-rose-500/30 bg-rose-500/5 p-6">
-                <p className="eyebrow !text-rose-400 mb-3">Pernocte</p>
-                <p className="font-display text-2xl text-night-50">
-                  <span className="text-rose-400">+ {formatARS(5000)}</span> sobre el precio de la habitación
+            <div className="mt-12 border-t border-b hairline py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div>
+                <p className="eyebrow text-gold-300 mb-3">Pernocte</p>
+                <p className="font-display text-2xl text-ink-50">
+                  + {formatARS(5000)} <span className="text-ink-100/50 text-lg italic">sobre el precio de la habitación</span>
                 </p>
-                <ul className="mt-4 space-y-2 text-sm text-night-200">
-                  <li><span className="text-night-50 font-medium">Domingos a jueves:</span> desde las 22 hs hasta las 10 hs</li>
-                  <li><span className="text-night-50 font-medium">Viernes y sábados:</span> desde las 2 hs hasta las 12 hs</li>
-                  <li className="text-rose-300 pt-2 border-t border-rose-500/20 mt-3"><span className="font-medium">Incluye desayuno</span></li>
-                </ul>
               </div>
+              <ul className="space-y-2 text-sm text-ink-100/70 italic font-display">
+                <li>Dom–jue · 22 hs a 10 hs</li>
+                <li>Vie–sáb · 02 hs a 12 hs</li>
+                <li className="text-gold-300 not-italic eyebrow !text-[10px] pt-2">Incluye desayuno</li>
+              </ul>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* UBICACIÓN */}
-      <section id="ubicacion" className="py-24 border-t hairline">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <p className="eyebrow mb-4">03 — Ubicación</p>
-            <h2 className="font-display text-4xl lg:text-5xl leading-tight text-night-50">Munro, <span className="italic text-rose-400">Zona Norte</span>.</h2>
-            <ul className="mt-10 space-y-5">
+      <section id="ubicacion" className="py-32 border-t hairline">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-16 items-center">
+          <Reveal className="lg:col-span-5">
+            <p className="eyebrow mb-6">04 — Ubicación</p>
+            <h2 className="font-display text-3xl lg:text-5xl text-ink-50 leading-tight font-light">
+              Munro,<br />
+              <span className="italic text-gold-300">Zona Norte</span>.
+            </h2>
+            <span className="rule mt-6" />
+            <ul className="mt-10 space-y-6">
               {[
                 ["Esteban Echeverría 3040", "Munro, Vicente López"],
                 ["Abierto las 24 horas", "Todos los días del año"],
                 ["Entrada por cochera privada", "Acceso 100% discreto"],
                 ["Estacionamiento incluido", "Sin cargo extra"]
               ].map(([t, d]) => (
-                <li key={t} className="flex gap-6 pb-5 border-b hairline">
-                  <span className="font-display text-2xl text-rose-400 w-8">·</span>
+                <li key={t} className="flex gap-5 pb-5 border-b hairline">
+                  <span className="font-script text-2xl text-gold-300 w-6 leading-none">·</span>
                   <div>
-                    <h4 className="font-medium text-night-50">{t}</h4>
-                    <p className="text-sm text-night-200 mt-1">{d}</p>
+                    <p className="font-display text-xl text-ink-50">{t}</p>
+                    <p className="text-sm text-ink-100/60 italic mt-1 font-display">{d}</p>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a href="https://wa.me/541147624892" target="_blank" rel="noopener" className="btn-ghost text-xs">WhatsApp →</a>
-              <a href="tel:+541147624892" className="btn-ghost text-xs">11 4762-4892</a>
+            <div className="mt-10 flex gap-6">
+              <a href="https://wa.me/541147624892" target="_blank" rel="noopener" className="cta-link">WhatsApp</a>
+              <a href="tel:+541147624892" className="cta-link">11 4762-4892</a>
             </div>
-          </div>
-          <div className="aspect-[4/5] bg-night-700 overflow-hidden border border-rose-500/10">
-            <iframe
-              src="https://www.google.com/maps?q=Esteban+Echeverria+3040+Munro&output=embed"
-              className="w-full h-full grayscale-[60%] contrast-110 brightness-90"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          </Reveal>
+          <Reveal className="lg:col-span-7" delay={200}>
+            <div className="aspect-[5/4] overflow-hidden border hairline">
+              <iframe
+                src="https://www.google.com/maps?q=Esteban+Echeverria+3040+Munro&output=embed"
+                className="w-full h-full grayscale contrast-110 brightness-75"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* RESERVAR CTA */}
-      <section id="reservar" className="py-32 border-t hairline relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-rose-900/10 to-transparent pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-6 text-center">
-          <p className="eyebrow mb-6">04 — Reservar</p>
-          <h2 className="font-display text-5xl lg:text-7xl leading-none text-night-50">¿Te <span className="italic text-rose-400">esperamos</span>?</h2>
-          <p className="mt-8 text-night-200 max-w-md mx-auto">
+      {/* CIERRE */}
+      <section className="py-40 border-t hairline relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-wine-500/10 rounded-full blur-3xl" />
+        </div>
+        <Reveal className="relative max-w-3xl mx-auto px-6 text-center">
+          <p className="eyebrow mb-6">05 — Reservá</p>
+          <h2 className="font-display text-4xl lg:text-6xl text-ink-50 leading-tight font-light">
+            ¿Te <span className="italic text-gold-300">esperamos</span>?
+          </h2>
+          <div className="flex justify-center mt-8"><span className="rule rule-gold" /></div>
+          <p className="mt-10 text-ink-100/70 italic max-w-md mx-auto font-display text-lg">
             Elegí habitación, fecha y horario. Pagás la seña por Mercado Pago y el resto al llegar.
           </p>
-          <Link href="/reservar" className="btn-primary mt-10 !px-10 !py-4">Reservar mi habitación →</Link>
-        </div>
+          <Link href="/reservar" className="cta-solid mt-12 !px-12 !py-5">
+            Reservar mi habitación
+          </Link>
+        </Reveal>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t hairline py-12 bg-night-950">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid md:grid-cols-3 gap-8 text-sm">
+      <footer className="border-t hairline pt-20 pb-10 bg-ink-950">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 grid md:grid-cols-3 gap-12">
           <div>
             <Logo size={48} />
-            <p className="mt-5 text-night-300 italic">"La ruta hacia el placer de tus momentos íntimos."</p>
+            <p className="mt-6 text-ink-100/60 italic font-display leading-relaxed">
+              "La ruta hacia el placer<br />de tus momentos íntimos."
+            </p>
           </div>
           <div>
-            <p className="eyebrow mb-3">Contacto</p>
-            <p className="text-night-100">11 4762-4892</p>
-            <a href="https://instagram.com/ruta.hotel" className="block text-night-100 hover:text-rose-400 transition-colors mt-1">Instagram @ruta.hotel</a>
-            <a href="https://facebook.com/hotelruta" className="block text-night-100 hover:text-rose-400 transition-colors">Facebook /hotelruta</a>
+            <p className="eyebrow mb-5">Contacto</p>
+            <p className="text-ink-100 font-display text-lg">11 4762-4892</p>
+            <a href="https://instagram.com/ruta.hotel" className="block text-ink-100/70 hover:text-gold-300 transition-colors mt-2 font-display italic">Instagram</a>
+            <a href="https://facebook.com/hotelruta" className="block text-ink-100/70 hover:text-gold-300 transition-colors font-display italic">Facebook</a>
           </div>
           <div>
-            <p className="eyebrow mb-3">Ubicación</p>
-            <p className="text-night-100">Esteban Echeverría 3040</p>
-            <p className="text-night-100">Munro, Vicente López</p>
-            <p className="text-night-300 mt-2 text-xs">Abierto las 24 hs · Todos los días</p>
+            <p className="eyebrow mb-5">Ubicación</p>
+            <p className="text-ink-100 font-display text-lg">Esteban Echeverría 3040</p>
+            <p className="text-ink-100/70 font-display italic">Munro · Vicente López</p>
+            <p className="text-ink-100/50 mt-3 eyebrow !text-[10px]">Abierto las 24 hs</p>
           </div>
         </div>
-        <p className="text-center text-xs text-night-400 mt-12">© 2026 Ruta Hotel. Todos los derechos reservados.</p>
+        <p className="text-center text-xs text-ink-100/30 mt-16 eyebrow">© 2026 Ruta Hotel</p>
       </footer>
+
+      <BookingBar />
     </main>
   );
 }
 
 function Tarifa({ nombre, precio, turno, destacado }: { nombre: string; precio: number; turno: string; destacado?: boolean }) {
   return (
-    <div className={`grid grid-cols-12 gap-4 px-6 py-5 border-b hairline last:border-0 ${destacado ? "bg-rose-500/5" : ""}`}>
-      <div className="col-span-12 sm:col-span-6">
-        <p className="font-medium text-night-50">{nombre}</p>
-        <p className="text-xs text-night-300 mt-1">{turno}</p>
+    <div className={`grid grid-cols-12 gap-4 py-7 border-b hairline ${destacado ? "bg-wine-900/15" : ""}`}>
+      <div className="col-span-12 sm:col-span-7">
+        <p className={`font-display text-2xl ${destacado ? "text-gold-300" : "text-ink-50"}`}>{nombre}</p>
+        <p className="text-xs text-ink-100/50 mt-2 eyebrow !text-[10px]">{turno}</p>
       </div>
-      <div className="col-span-12 sm:col-span-6 sm:text-right">
-        <p className={`font-display text-2xl ${destacado ? "text-rose-400" : "text-night-50"}`}>{formatARS(precio)}</p>
+      <div className="col-span-12 sm:col-span-5 sm:text-right">
+        <p className={`font-display text-3xl ${destacado ? "text-gold-300" : "text-ink-50"}`}>
+          {formatARS(precio)}
+        </p>
       </div>
     </div>
   );
