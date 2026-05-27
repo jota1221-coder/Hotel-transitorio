@@ -15,7 +15,7 @@ export default async function HomePage() {
   return (
     <main className="pb-32">
       {/* NAV */}
-      <nav className="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink-900/40 border-b hairline">
+      <nav className="fixed top-7 inset-x-0 z-50 backdrop-blur-md bg-ink-900/40 border-b hairline">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center">
             <Logo size={42} />
@@ -293,7 +293,15 @@ export default async function HomePage() {
             <p className="text-ink-100/50 mt-3 eyebrow !text-[10px]">Abierto las 24 hs</p>
           </div>
         </div>
-        <p className="text-center text-xs text-ink-100/30 mt-16 eyebrow">© 2026 Ruta Hotel</p>
+        <div className="mt-16 pt-10 border-t hairline">
+          <p className="text-center text-[11px] text-ink-100/40 italic font-display max-w-2xl mx-auto leading-relaxed px-6">
+            Este sitio es un proyecto de demostración técnica desarrollado de forma independiente.
+            No es el sitio oficial de Ruta Hotel ni mantiene relación comercial con el establecimiento.
+          </p>
+          <p className="text-center text-[10px] text-ink-100/30 mt-5 eyebrow">
+            Demo desarrollada por Joaquin Rao · 2026
+          </p>
+        </div>
       </footer>
 
       <BookingBar />

@@ -32,7 +32,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${cormorant.variable} ${inter.variable} ${pinyon.variable}`}>
-      <body className="min-h-screen bg-ink-950 text-ink-50 antialiased">{children}</body>
+      <body className="min-h-screen bg-ink-950 text-ink-50 antialiased pt-7">
+        <div className="fixed top-0 inset-x-0 z-[60] bg-wine-700/90 backdrop-blur-sm text-center py-1.5 text-[10px] eyebrow !text-ink-50 px-4">
+          Demo no oficial · Sin relación comercial con el establecimiento
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
