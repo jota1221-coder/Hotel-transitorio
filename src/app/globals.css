@@ -36,11 +36,11 @@ html, body {
 
 /* EYEBROW — etiqueta sutil sobre los títulos */
 .eyebrow {
-  font-family: var(--font-sans), sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.32em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  font-weight: 400;
+  font-weight: 500;
   color: #B98D3F;
 }
 
