@@ -65,6 +65,9 @@ export default async function AdminPage() {
               <div className="col-span-3 self-center">
                 <p className="font-display text-ink-50">{b.guestName}</p>
                 <p className="text-xs text-ink-100/40 italic">{b.guestEmail}</p>
+                <a href={`tel:${b.guestPhone}`} className="text-xs text-gold-300 hover:text-gold-200 transition-colors block mt-0.5">
+                  {b.guestPhone}
+                </a>
               </div>
               <div className="col-span-2 self-center">
                 <p className="font-display text-ink-100">{b.room.name}</p>
