@@ -27,7 +27,7 @@ export default function BookingBar() {
             min={today}
             value={date}
             onChange={e => setDate(e.target.value)}
-            className="input !py-1 !text-sm md:!text-base"
+            className="input !py-1 !text-base"
           />
         </div>
 

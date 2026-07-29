@@ -34,7 +34,7 @@ export default async function ConfirmacionPage({ params }: { params: { id: strin
         </h1>
         <div className="flex justify-center mt-8"><span className="rule rule-gold" /></div>
         <p className="mt-10 text-ink-100/70 italic font-display">
-          Enviamos los detalles a <span className="text-ink-50 not-italic">{booking.guestEmail}</span>
+          Guardá este código — te lo pedimos al llegar
         </p>
 
         <div className="mt-16 text-left border hairline bg-ink-900/40">
@@ -52,7 +52,7 @@ export default async function ConfirmacionPage({ params }: { params: { id: strin
             <Row label="Horario" value={`${booking.startTime} → ${booking.endTime}`} />
             <Row label="Duración" value={`${booking.durationHours} horas`} />
             <Row label="Total" value={formatARS(booking.totalPrice)} />
-            <Row label="Seña abonada" value={formatARS(booking.depositPaid)} accent />
+            <Row label="Seña a abonar" value={formatARS(booking.depositPaid)} accent />
             <Row label="Saldo al llegar" value={formatARS(booking.totalPrice - booking.depositPaid)} />
           </div>
         </div>

@@ -24,9 +24,27 @@ const pinyon = Pinyon_Script({
   display: "swap",
 });
 
+const title = "Ruta Hotel · Albergue Transitorio en Munro";
+const description =
+  "La ruta hacia el placer de tus momentos íntimos. Habitaciones premium con jacuzzi, cochera y room service. Abierto las 24 hs en Munro, Vicente López.";
+
 export const metadata: Metadata = {
-  title: "Ruta Hotel · Albergue Transitorio en Munro",
-  description: "La ruta hacia el placer de tus momentos íntimos. Habitaciones premium con jacuzzi, cochera y room service. Abierto las 24 hs en Munro, Vicente López.",
+  metadataBase: new URL("https://hotel-transitorio.vercel.app"),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "https://hotel-transitorio.vercel.app",
+    siteName: "Ruta Hotel",
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

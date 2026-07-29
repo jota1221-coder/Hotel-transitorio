@@ -371,10 +371,10 @@ export default function ReservationForm({
           )}
 
           <button type="submit" disabled={submitting || !startTime} className="cta-solid w-full mt-10 disabled:opacity-50">
-            {submitting ? "Procesando…" : "Confirmar y pagar seña"}
+            {submitting ? "Procesando…" : "Confirmar reserva"}
           </button>
           <p className="text-[10px] text-ink-100/40 mt-5 text-center eyebrow">
-            Pago seguro vía Mercado Pago
+            Seña a coordinar al confirmar
           </p>
         </div>
       </aside>
