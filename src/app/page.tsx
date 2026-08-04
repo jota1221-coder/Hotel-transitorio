@@ -292,8 +292,8 @@ export default async function HomePage() {
           <div>
             <p className="eyebrow mb-5">Contacto</p>
             <p className="text-ink-100 font-display text-lg">11 4762-4892</p>
-            <a href="https://instagram.com/ruta.hotel" className="block text-ink-100/70 hover:text-gold-300 transition-colors mt-2 font-display italic">Instagram</a>
-            <a href="https://facebook.com/hotelruta" className="block text-ink-100/70 hover:text-gold-300 transition-colors font-display italic">Facebook</a>
+            <a href="https://instagram.com/ruta.hotel" className="block py-1 text-ink-100/70 hover:text-gold-300 transition-colors mt-2 font-display italic">Instagram</a>
+            <a href="https://facebook.com/hotelruta" className="block py-1 text-ink-100/70 hover:text-gold-300 transition-colors font-display italic">Facebook</a>
           </div>
           <div>
             <p className="eyebrow mb-5">Ubicación</p>

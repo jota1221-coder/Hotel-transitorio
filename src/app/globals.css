@@ -66,6 +66,10 @@ html, body {
   text-transform: uppercase;
   font-weight: 400;
   color: #F2EDE5;
+  /* padding-top: sin esto el link mide 23px de alto y queda 1px por debajo
+     del mínimo táctil de 24×24 (WCAG 2.2 AA). El padding-bottom no cambia,
+     así que la separación con el subrayado queda igual. */
+  padding-top: 6px;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(242, 237, 229, 0.4);
   transition: all 0.4s ease;
