@@ -9,3 +9,6 @@ Fotos nuevas/
 
 .vercel
 .env*
+
+# graphify (artefactos generados)
+graphify-out/
