@@ -23,6 +23,35 @@ export const CLEANUP_HOURS = 2;
 // Buffer adicional entre turnos (margen logístico para que el cliente pueda entrar)
 export const BUFFER_HOURS = 1;
 
+// El hotel está en Munro, Vicente López. El server puede correr en UTC
+// (Vercel lo hace), así que "hoy" y "ahora" NUNCA se calculan con new Date()
+// a secas: se resuelven siempre contra esta zona horaria.
+export const TIMEZONE = "America/Argentina/Buenos_Aires";
+
+/**
+ * Fecha (YYYY-MM-DD) y minutos desde medianoche, ambos en hora de Buenos Aires.
+ */
+export function nowInBuenosAires(): { dateStr: string; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? "00";
+  // A medianoche algunos runtimes devuelven "24" en vez de "00".
+  const hour = parseInt(get("hour"), 10) % 24;
+
+  return {
+    dateStr: `${get("year")}-${get("month")}-${get("day")}`,
+    minutes: hour * 60 + parseInt(get("minute"), 10),
+  };
+}
+
 export type RoomKind = "simple" | "premium"; // simple = 2hs siempre · premium = el resto
 
 export function getRoomKind(roomType: string): RoomKind {
@@ -110,12 +139,15 @@ export function generateSlots(): string[] {
  * @param targetDate - día para el que queremos saber slots
  * @param sameDayBookings - reservas del mismo día
  * @param previousDayPernocte - pernocte del día anterior (si existe, ocupa hasta 10:00 o 12:00 de hoy)
+ * @param minStartMinutes - si el día pedido es HOY, minutos desde medianoche a partir
+ *   de los cuales un turno todavía puede arrancar. `null` para días futuros (sin filtro).
  */
 export function getAvailableSlots(
   roomType: string,
   targetDate: Date,
   sameDayBookings: Array<{ type: string; startTime: string; durationHours: number }>,
-  previousDayPernocte: { type: string; startTime: string; durationHours: number } | null
+  previousDayPernocte: { type: string; startTime: string; durationHours: number } | null,
+  minStartMinutes: number | null = null
 ): Array<{ time: string; duration: number; available: boolean }> {
   const allSlots = generateSlots();
 
@@ -155,11 +187,13 @@ export function getAvailableSlots(
 
     // Bloqueado si el slot solapa con alguna ventana ocupada
     const isBlocked = occupied.some(o => slotStart < o.end && slotEnd > o.start);
+    // Un turno que ya arrancó no se puede reservar (sólo aplica al día de hoy)
+    const isPast = minStartMinutes !== null && slotStart < minStartMinutes;
 
     return {
       time,
       duration,
-      available: !isBlocked,
+      available: !isBlocked && !isPast,
     };
   });
 }

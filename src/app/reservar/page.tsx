@@ -30,7 +30,7 @@ export default async function ReservarPage({
         </h1>
         <span className="rule mt-8 block" />
         <p className="mt-8 text-ink-100/70 italic font-display text-lg max-w-md">
-          Tres pasos. Sin protocolos. Confirmación inmediata, seña a coordinar al llegar.
+          Cinco pasos. Sin protocolos. Confirmación inmediata, seña a coordinar al llegar.
         </p>
 
         <div className="mt-20">

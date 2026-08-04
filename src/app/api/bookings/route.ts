@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
-import { canBook, getPernocte, getTurnoDuration } from "@/lib/turnos";
+import { canBook, getPernocte, getTurnoDuration, nowInBuenosAires, timeToMinutes } from "@/lib/turnos";
 
 const BookingSchema = z.object({
   roomId: z.string().min(1).max(50),
@@ -46,10 +46,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Fecha inválida" }, { status: 400 });
     }
 
-    // Validar que no sea en el pasado
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (dateObj < today) {
+    // Validar que no sea en el pasado, en hora de Buenos Aires: el server
+    // corre en UTC y con new Date() a secas la validación se corre 3 horas.
+    const now = nowInBuenosAires();
+    if (date < now.dateStr) {
       return NextResponse.json({ error: "La fecha no puede ser anterior a hoy" }, { status: 400 });
     }
 
@@ -86,6 +86,12 @@ export async function POST(req: Request) {
       const endHour = (startHour + durationHours) % 24;
       endTime = `${String(endHour).padStart(2, "0")}:00`;
       totalPrice = room.pricePerNight;
+    }
+
+    // Si la reserva es para hoy, el horario no puede haber pasado ya.
+    // Sin esto, a las 12:06 se podía reservar el turno de las 00:00.
+    if (date === now.dateStr && timeToMinutes(startTime) < now.minutes) {
+      return NextResponse.json({ error: "Ese horario ya pasó" }, { status: 400 });
     }
 
     // Verificar disponibilidad
