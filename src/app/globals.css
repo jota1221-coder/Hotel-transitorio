@@ -210,15 +210,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .mood:hover::after { opacity: 0.4; }
 
-/* Reveal en scroll */
-.reveal {
+/* Reveal en scroll — visible por defecto: si el JS no corre o el observer no
+   dispara, el contenido se ve igual. La animación es un agregado (.armed,
+   puesto por JS), nunca un requisito para ver el contenido. */
+.reveal.armed {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 1s ease, transform 1.1s cubic-bezier(0.25, 1, 0.5, 1);
 }
-.reveal.in {
+.reveal.armed.in {
   opacity: 1;
   transform: translateY(0);
+  transition: opacity 1s ease, transform 1.1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Sticky booking bar */

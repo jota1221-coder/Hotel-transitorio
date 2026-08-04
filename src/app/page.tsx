@@ -8,6 +8,7 @@ import { Logo } from "@/components/Logo";
 import Reveal from "@/components/Reveal";
 import BookingBar from "@/components/BookingBar";
 import ImageLightbox from "@/components/ImageLightbox";
+import { RoomPhoto } from "@/components/RoomPhoto";
 
 export default async function HomePage() {
   const rooms = await prisma.room.findMany({ orderBy: { pricePerNight: "asc" } });
@@ -117,11 +118,17 @@ export default async function HomePage() {
             <Reveal key={room.id} className="mb-32 last:mb-0">
               <div className={`grid lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? "lg:[direction:rtl]" : ""}`}>
                 <div className="lg:col-span-7 [direction:ltr]">
-                  <ImageLightbox src={room.imageUrl} alt={room.name}>
+                  {room.imageUrl ? (
+                    <ImageLightbox src={room.imageUrl} alt={room.name}>
+                      <div className="mood aspect-[4/3]">
+                        <RoomPhoto src={room.imageUrl} alt={room.name} sizes="(max-width: 1024px) 100vw, 58vw" />
+                      </div>
+                    </ImageLightbox>
+                  ) : (
                     <div className="mood aspect-[4/3]">
-                      <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
+                      <RoomPhoto src="" alt={room.name} />
                     </div>
-                  </ImageLightbox>
+                  )}
                 </div>
                 <div className="lg:col-span-5 [direction:ltr]">
                   <p className="eyebrow mb-4">{room.type}</p>
@@ -153,7 +160,7 @@ export default async function HomePage() {
               {rooms.map(room => (
                 <Link key={room.id} href={`/reservar?room=${room.id}`} className="group block">
                   <div className="mood aspect-[4/5] mb-5">
-                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
+                    <RoomPhoto src={room.imageUrl} alt={room.name} sizes="(max-width: 768px) 100vw, 33vw" />
                   </div>
                   <p className="eyebrow mb-2">{room.type}</p>
                   <h4 className="font-display text-2xl text-ink-50 group-hover:text-gold-300 transition-colors">

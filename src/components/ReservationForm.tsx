@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { formatARS } from "@/lib/format";
+import { RoomPhoto } from "@/components/RoomPhoto";
 
 type Room = {
   id: string;
@@ -133,7 +133,7 @@ export default function ReservationForm({
           {!showAllRooms && selected ? (
             <div className="flex gap-6 items-start border hairline p-5">
               <div className="relative w-32 h-32 shrink-0 mood">
-                <Image src={selected.imageUrl} alt={selected.name} fill className="object-cover" />
+                <RoomPhoto src={selected.imageUrl} alt={selected.name} sizes="128px" />
               </div>
               <div className="flex-1">
                 <p className="eyebrow mb-1">{selected.type}</p>
@@ -167,7 +167,7 @@ export default function ReservationForm({
                     className="sr-only"
                   />
                   <div className="relative w-24 h-24 shrink-0 mood">
-                    <Image src={room.imageUrl} alt={room.name} fill className="object-cover" />
+                    <RoomPhoto src={room.imageUrl} alt={room.name} sizes="96px" />
                   </div>
                   <div className="flex-1">
                     <p className="eyebrow !text-[10px] mb-1">{room.type}</p>

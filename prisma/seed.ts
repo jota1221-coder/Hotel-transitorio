@@ -2,6 +2,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Sólo hay fotos reales de las habitaciones 15 y 23 (ambas con hidromasaje).
+// Las dos categorías Simple van SIN foto a propósito: mostrar una foto de
+// hidromasaje en una habitación de $38.000 es venderle al cliente algo que
+// no va a recibir. imageUrl vacío = la UI muestra el estado "sin foto".
+const SIN_FOTO = "";
+
 async function main() {
   await prisma.booking.deleteMany();
   await prisma.room.deleteMany();
@@ -15,7 +21,7 @@ async function main() {
         pricePerNight: 38000,
         capacity: 2,
         amenities: "Cama Queen,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "/hotel/hab15-1.jpg"
+        imageUrl: SIN_FOTO
       },
       {
         name: "Habitación N°13",
@@ -24,7 +30,7 @@ async function main() {
         pricePerNight: 43000,
         capacity: 2,
         amenities: "Cochera privada,Cama Queen,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "/hotel/hab15-2.jpg"
+        imageUrl: SIN_FOTO
       },
       {
         name: "Habitación N°15",
@@ -42,7 +48,7 @@ async function main() {
         pricePerNight: 48000,
         capacity: 2,
         amenities: "Cochera privada,Hidromasaje,Iluminación LED,Smart TV,Bluetooth,Frigobar,Wi-Fi,A/C",
-        imageUrl: "/hotel/hab23-2.jpg"
+        imageUrl: "/hotel/hab15-2.jpg"
       },
       {
         name: "Habitación N°23",
@@ -65,7 +71,7 @@ async function main() {
     ]
   });
 
-  console.log("✓ Seed Ruta Hotel — 6 habitaciones con fotos reales");
+  console.log("✓ Seed Ruta Hotel — 6 habitaciones (4 con foto real, 2 sin material propio)");
 }
 
 main().finally(() => prisma.$disconnect());
